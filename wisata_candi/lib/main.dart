@@ -84,5 +84,3 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
-
-// ... (remaining classes stay the same)

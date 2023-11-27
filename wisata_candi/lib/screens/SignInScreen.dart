@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
   SignInScreen({Key? key}) : super(key: key);
@@ -14,6 +16,16 @@ class _SignInScreenState extends State<SignInScreen> {
   String _errorText = '';
   bool _isSignedIn = false;
   bool _obscurePassword = true;
+
+  void _signIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String savedUsername = prefs.getString('username') ?? '';
+    final String savedPassword = prefs.getString('password') ?? '';
+    final String enteredUsername = _usernameController.text.trim();
+    final String enteredPassword = _passwordController.text.trim();
+ 
+ if (enteredUsername.isEmpty)
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +83,28 @@ class _SignInScreenState extends State<SignInScreen> {
                 SizedBox(height: 20),
                 ElevatedButton(onPressed: () {}, child: Text('Sign In')),
                 SizedBox(height: 18),
-                TextButton(
-                  onPressed: () {},
-                  child: Text('Belum punya akun? Daftar di sini'),
+                //TextButton(
+                // onPressed: () {},
+                // child: Text('Belum punya akun? Daftar di sini'),
+                RichText(
+                  text: TextSpan(
+                    text: 'Belum punya akun?',
+                    style:
+                        const TextStyle(fontSize: 16, color: Colors.deepPurple),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Daftar di sini',
+                        style: const TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                            fontSize: 16),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.pushNamed(context, '/signup');
+                          },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
