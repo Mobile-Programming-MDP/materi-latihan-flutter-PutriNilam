@@ -14,7 +14,6 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   String _errorText = '';
-  bool _isSignedIn = false;
   bool _obscurePassword = true;
 
   void _signIn() async {
@@ -23,8 +22,28 @@ class _SignInScreenState extends State<SignInScreen> {
     final String savedPassword = prefs.getString('password') ?? '';
     final String enteredUsername = _usernameController.text.trim();
     final String enteredPassword = _passwordController.text.trim();
- 
- if (enteredUsername.isEmpty)
+
+    if (enteredUsername.isEmpty || enteredPassword.isEmpty) {
+      setState(() {
+        _errorText = 'Nama pengguna dan kata sandi harus diisi.';
+      });
+      return;
+    }
+
+    if (savedUsername.isEmpty || savedPassword.isEmpty) {
+      setState(() {
+        _errorText =
+            'Pengguna belum terdaftar. Silahkan daftar terlebih dahulu.';
+      });
+      return;
+    }
+
+    // Your existing sign-in logic goes here...
+
+    // If everything is successful, reset the error text
+    setState(() {
+      _errorText = '';
+    });
   }
 
   @override
@@ -81,11 +100,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   obscureText: _obscurePassword,
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(onPressed: () {}, child: Text('Sign In')),
+                ElevatedButton(onPressed: _signIn, child: Text('Sign In')),
                 SizedBox(height: 18),
-                //TextButton(
-                // onPressed: () {},
-                // child: Text('Belum punya akun? Daftar di sini'),
+                TextButton(
+                  onPressed: () {},
+                  child: Text('Belum punya akun? Daftar di sini'),
+                ),
                 RichText(
                   text: TextSpan(
                     text: 'Belum punya akun?',
@@ -95,9 +115,10 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextSpan(
                         text: 'Daftar di sini',
                         style: const TextStyle(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
-                            fontSize: 16),
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                          fontSize: 16,
+                        ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             Navigator.pushNamed(context, '/signup');
